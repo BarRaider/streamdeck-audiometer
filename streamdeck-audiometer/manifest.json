@@ -1,0 +1,40 @@
+{
+  "Actions": [
+    {
+      "Icon": "Images/icon",
+      "Name": "Audio Meter",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "18",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "SupportedInMultiActions": false,
+      "Tooltip": "Audio meter that shows the levels of your playback/recording devices on the Stream Deck",
+      "UUID": "com.barraider.audiometer.audiometer",
+      "PropertyInspectorPath": "PropertyInspector/AudioMeter.html"
+    }
+  ],
+  "Author": "BarRaider",
+  "Description": "Audio meter that shows the levels of your playback/recording devices on the Stream Deck",
+  "Name": "Audio Meter",
+  "Icon": "Images/pluginIcon",
+  "URL": "https://BarRaider.com/",
+  "Version": "1.0",
+  "CodePath": "com.barraider.audiometer",
+  "Category": "BarRaider",
+  "CategoryIcon": "Images/categoryIcon",
+  "OS": [
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "SDKVersion": 2,
+  "Software": {
+    "MinimumVersion": "4.4.1"
+  }
+}

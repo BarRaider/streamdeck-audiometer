@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,minimal-ui,viewport-fit=cover">
+    <meta name=apple-mobile-web-app-capable content=yes>
+    <meta name=apple-mobile-web-app-status-bar-style content=black>
+    <title>streamdeck_audiometer Settings</title>
+    <link rel="stylesheet" href="sdpi.css">
+    <script src="sdtools.common.js"></script>
+    <script src="AudioMeter.js"></script>
+</head>
+<body>
+    <div class="sdpi-wrapper">
+        <details class="message">
+            <summary>For feedback/suggestions contact me at <span class="linkspan" onclick="openWebsite()">https://BarRaider.com</span></summary>
+        </details>
+        <div class="sdpi-item" id="dvPlaybackDevices">
+            <div class="sdpi-item-label">Playback Device</div>
+            <select class="sdpi-item-value select sdProperty sdList" id="audioDevices" oninput="setSettings()" sdListTextProperty="name" sdListValueProperty="name" sdValueField="audioDevice"></select>
+        </div>
+        <div type="color" class="sdpi-item" id="dvLowColor">
+            <div class="sdpi-item-label">Low Color</div>
+            <input type="color" class="sdpi-item-value sdProperty" value="#00FF00" id="lowColor" oninput="setSettings()">
+        </div>
+        <div type="color" class="sdpi-item" id="dvMidColor">
+            <div class="sdpi-item-label">Mid Level</div>
+            <input type="color" class="sdpi-item-value sdProperty" value="#FFFF00" id="midColor" oninput="setSettings()">
+            <input class="sdpi-item-value sdProperty" placeholder="75" value="" id="midLevel" oninput="setSettings()">
+        </div>
+        <div type="color" class="sdpi-item" id="dvPeakColor">
+            <div class="sdpi-item-label">Peak Level</div>
+            <input type="color" class="sdpi-item-value sdProperty" value="#FF0000" id="peakColor" oninput="setSettings()">
+            <input class="sdpi-item-value sdProperty" placeholder="85" value="" id="peakLevel" oninput="setSettings()">
+        </div>
+        <div type="checkbox" class="sdpi-item" id="dvSoundOnEnd">
+            <div class="sdpi-item-label">Level Title</div>
+            <div class="sdpi-item-value">
+                <input id="showLevelAsText" type="checkbox" value="" class="sdProperty sdCheckbox" oninput="setSettings()">
+                <label for="showLevelAsText" class="sdpi-item-label"><span></span>Show level as text on key</label>
+            </div>
+        </div>
+        <div type="color" class="sdpi-item" id="dvBGColor">
+            <div class="sdpi-item-label">Background Color</div>
+            <input type="color" class="sdpi-item-value sdProperty" value="#000000" id="backgroundColor" oninput="setSettings()">
+        </div>
+        <div class="sdpi-item" id="select_single">
+            <div class="sdpi-item-label">Visual Style</div>
+            <select class="sdpi-item-value select sdProperty" id="visualStyle" oninput="setSettings()" value="0">
+                <option value="0">3-Color Gradient</option>
+                <option value="1">Solid Color</option>
+                <option value="2">Background Gradient</option>
+                <option value="3">Background Gradient Flipped</option>
+            </select>
+        </div>
+    </div>
+</body>
+</html>
