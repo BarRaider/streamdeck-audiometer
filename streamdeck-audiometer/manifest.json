@@ -23,7 +23,7 @@
   "Name": "Audio Meter",
   "Icon": "Images/pluginIcon",
   "URL": "https://BarRaider.com/",
-  "Version": "1.0",
+  "Version": "1.1",
   "CodePath": "com.barraider.audiometer",
   "Category": "BarRaider",
   "CategoryIcon": "Images/categoryIcon",
@@ -35,6 +35,6 @@
   ],
   "SDKVersion": 2,
   "Software": {
-    "MinimumVersion": "4.4.1"
+    "MinimumVersion": "4.5.1"
   }
 }

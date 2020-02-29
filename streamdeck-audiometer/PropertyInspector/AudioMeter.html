@@ -19,6 +19,10 @@
             <div class="sdpi-item-label">Playback Device</div>
             <select class="sdpi-item-value select sdProperty sdList" id="audioDevices" oninput="setSettings()" sdListTextProperty="name" sdListValueProperty="name" sdValueField="audioDevice"></select>
         </div>
+        <div type="color" class="sdpi-item" id="dvMidColor">
+            <div class="sdpi-item-label">Max Threshold</div>
+            <input class="sdpi-item-value sdProperty" id="maxThreshold" value="100" inputmode="numeric" pattern="[0-9]*" type="number" oninput="setSettings()">
+        </div>
         <div type="color" class="sdpi-item" id="dvLowColor">
             <div class="sdpi-item-label">Low Color</div>
             <input type="color" class="sdpi-item-value sdProperty" value="#00FF00" id="lowColor" oninput="setSettings()">

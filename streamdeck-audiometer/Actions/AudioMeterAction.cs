@@ -16,6 +16,11 @@ using System.Threading.Tasks;
 namespace AudioMeter.Actions
 {
     [PluginActionId("com.barraider.audiometer.audiometer")]
+
+    //---------------------------------------------------
+    //          BarRaider's Hall Of Fame
+    // Subscriber: SenseiHitokiri
+    //---------------------------------------------------
     public class AudioMeterAction : PluginBase
     {
         public enum MeterVisualStyle
@@ -41,7 +46,8 @@ namespace AudioMeter.Actions
                     PeakColor = PEAK_COLOR_DEFAULT,
                     BackgroundColor = BACKGROUND_COLOR_DEFAULT,
                     VisualStyle = MeterVisualStyle.ThreeColorGradient,
-                    ShowLevelAsText = false
+                    ShowLevelAsText = false,
+                    MaxThreshold = MAX_THRESHOLD_DEFAULT.ToString()
                 };
                 return instance;
             }
@@ -75,11 +81,16 @@ namespace AudioMeter.Actions
 
             [JsonProperty(PropertyName = "visualStyle")]
             public MeterVisualStyle VisualStyle { get; set; }
+
+            [JsonProperty(PropertyName = "maxThreshold")]
+            public string MaxThreshold { get; set; }
+
         }
 
         #region Private Members
         private const int MID_LEVEL_DEFAULT = 75;
         private const int PEAK_LEVEL_DEFAULT = 85;
+        private const int MAX_THRESHOLD_DEFAULT = 100;
         private const string LOW_COLOR_DEFAULT = "#00FF00";
         private const string MID_COLOR_DEFAULT = "#FFFF00";
         private const string PEAK_COLOR_DEFAULT = "#FF0000";
@@ -90,6 +101,7 @@ namespace AudioMeter.Actions
         private MMDevice mmDevice = null;
         private int midLevel;
         private int peakLevel;
+        private int maxThreshold;
 
         #endregion
         public AudioMeterAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
@@ -182,6 +194,12 @@ namespace AudioMeter.Actions
                 await SaveSettings();
             }
 
+            if (!Int32.TryParse(settings.MaxThreshold, out maxThreshold))
+            {
+                settings.MaxThreshold = MAX_THRESHOLD_DEFAULT.ToString();
+                await SaveSettings();
+            }
+
             if (midLevel > 100)
             {
                 settings.MidLevel = MID_LEVEL_DEFAULT.ToString();
@@ -192,6 +210,12 @@ namespace AudioMeter.Actions
                 settings.PeakLevel = PEAK_LEVEL_DEFAULT.ToString();
                 await SaveSettings();
             }
+            if (maxThreshold < 0 || maxThreshold > 100)
+            {
+                settings.MaxThreshold = MAX_THRESHOLD_DEFAULT.ToString();
+                await SaveSettings();
+            }
+
             await PropagatePlaybackDevices();
         }
 
@@ -263,7 +287,11 @@ namespace AudioMeter.Actions
 
         private async Task DisplayMeter(int level)
         {
-            double remainingPercentage = (double)level / (double)100;
+            double remainingPercentage = (double)level / (double)maxThreshold;
+            if (remainingPercentage > 100)
+            {
+                remainingPercentage = 100;
+            }
             using (Bitmap img = Tools.GenerateGenericKeyImage(out Graphics graphics))
             {
                 int height = img.Height;

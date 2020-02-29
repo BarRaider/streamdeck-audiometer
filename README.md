@@ -4,7 +4,11 @@ Shows the levels of your playback/recording devices on the Stream Deck
 
 **Author's website and contact information:** [https://barraider.com](https://barraider.com)
 
+## New in v1.1
+- Customizable "Max value" allows you to raise the bars based on what you want the peak to be.
+
 ## Features
+
 - Supports both recording and playback devices
 - Customize the various levels (mid/peaks)
 - Customize the various colors and visual style of the display
