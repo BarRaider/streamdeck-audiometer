@@ -126,6 +126,7 @@ namespace AudioMeter.Actions
         public override void Dispose()
         {
             Logger.Instance.LogMessage(TracingLevel.INFO, $"Destructor called");
+            tmrGetAudioLevel.Stop();
         }
 
         public async override void KeyPressed(KeyPayload payload)

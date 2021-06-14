@@ -23,7 +23,7 @@
   "Name": "Audio Meter",
   "Icon": "Images/pluginIcon",
   "URL": "https://BarRaider.com/",
-  "Version": "1.1",
+  "Version": "1.2",
   "CodePath": "com.barraider.audiometer",
   "Category": "BarRaider",
   "CategoryIcon": "Images/categoryIcon",
