@@ -254,14 +254,21 @@ namespace AudioMeter.Actions
         {
             if (mmDevice == null)
             {
-                if (!(sender is Timer timer)) return;
-                var interval = timer.Interval;
+                if (sender is Timer timer)
+                {
+                    var interval = timer.Interval;
 
-                timer.Interval = 30000;
+                    timer.Interval = 30000;
 
-                SetMMDeviceFromDeviceName(settings.AudioDevice);
+                    SetMMDeviceFromDeviceName(settings.AudioDevice);
 
-                timer.Interval = Math.Min(200, interval);
+                    timer.Interval = Math.Min(200, interval);
+
+                }
+                else // just a safe guard in case something else is calling us that isn't a timer we can control
+                {
+                    SetMMDeviceFromDeviceName(settings.AudioDevice);
+                }
             }
 
             if (mmDevice != null)
