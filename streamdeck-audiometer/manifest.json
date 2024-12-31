@@ -12,20 +12,46 @@
 
         }
       ],
+      "Controllers": [ "Keypad", "Encoder" ],
+      "Encoder": {
+        "layout": "$A0"
+      },
       "SupportedInMultiActions": false,
       "Tooltip": "Audio meter that shows the levels of your playback/recording devices on the Stream Deck",
       "UUID": "com.barraider.audiometer.audiometer",
       "PropertyInspectorPath": "PropertyInspector/AudioMeter.html"
+    },
+    {
+      "Icon": "Images/icon",
+      "Name": "Midi Meter",
+      "States": [
+        {
+          "Image": "Images/pluginAction",
+          "TitleAlignment": "middle",
+          "FontSize": "18",
+          "TitleColor": "Yellow"
+
+        }
+      ],
+      "Controllers": [ "Keypad", "Encoder" ],
+      "Encoder": {
+        "layout": "$A0"
+      },
+      "SupportedInMultiActions": false,
+      "Tooltip": "Show levels based on Midi CC",
+      "UUID": "com.barraider.audiometer.midimeter",
+      "PropertyInspectorPath": "PropertyInspector/MidiMeter.html"
     }
+
   ],
   "Author": "BarRaider",
   "Description": "Audio meter that shows the levels of your playback/recording devices on the Stream Deck",
   "Name": "Audio Meter",
   "Icon": "Images/pluginIcon",
   "URL": "https://BarRaider.com/",
-  "Version": "1.2",
+  "Version": "1.2.3",
   "CodePath": "com.barraider.audiometer",
-  "Category": "BarRaider",
+  "Category": "Audio Meter [BarRaider]",
   "CategoryIcon": "Images/categoryIcon",
   "OS": [
     {

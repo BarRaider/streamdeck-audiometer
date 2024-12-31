@@ -1,5 +1,6 @@
 ﻿using AudioMeter.Wrappers;
 using BarRaider.SdTools;
+using BarRaider.SdTools.Payloads;
 using NAudio.CoreAudioApi;
 using NAudio.Wave;
 using Newtonsoft.Json;
@@ -21,7 +22,7 @@ namespace AudioMeter.Actions
     //          BarRaider's Hall Of Fame
     // Subscriber: SenseiHitokiri
     //---------------------------------------------------
-    public class AudioMeterAction : PluginBase
+    public class AudioMeterAction : KeyAndEncoderBase
     {
         public enum MeterVisualStyle
         {
@@ -102,6 +103,7 @@ namespace AudioMeter.Actions
         private int midLevel;
         private int peakLevel;
         private int maxThreshold;
+        private bool isActionOnDial = false;
 
         #endregion
         public AudioMeterAction(SDConnection connection, InitialPayload payload) : base(connection, payload)
@@ -115,12 +117,11 @@ namespace AudioMeter.Actions
                 this.settings = payload.Settings.ToObject<PluginSettings>();
             }
 
+            isActionOnDial = payload.Controller == "Encoder";
             tmrGetAudioLevel.Interval = 200;
             tmrGetAudioLevel.Elapsed += TmrGetAudioLevel_Elapsed;
 
-            #pragma warning disable 4014
-            InitializeSettings();
-            #pragma warning restore 4014
+            _ = InitializeSettings();
         }
 
         public override void Dispose()
@@ -171,6 +172,14 @@ namespace AudioMeter.Actions
             await SaveSettings();
         }
 
+        public override void DialRotate(DialRotatePayload payload) { }
+
+        public override void DialDown(DialPayload payload) { }
+
+        public override void DialUp(DialPayload payload) { }
+
+        public override void TouchPress(TouchpadPressPayload payload) { }
+
         public override void ReceivedGlobalSettings(ReceivedGlobalSettingsPayload payload) { }
 
         #region Private Methods
@@ -217,6 +226,11 @@ namespace AudioMeter.Actions
                 await SaveSettings();
             }
 
+            if (isActionOnDial)
+            {
+                await ClearDialImage();
+            }
+
             await PropagatePlaybackDevices();
         }
 
@@ -227,7 +241,7 @@ namespace AudioMeter.Actions
 
         private Task PropagatePlaybackDevices()
         {
-            return Task.Run(async ()  =>
+            return Task.Run(async () =>
             {
                 settings.AudioDevices = new List<AudioDevice>();
 
@@ -263,7 +277,7 @@ namespace AudioMeter.Actions
                     await Connection.SetTitleAsync("🔇");
                 }
                 else
-                { 
+                {
                     int volumeLevel = (int)(mmDevice.AudioMeterInformation.MasterPeakValue * 100);
                     await DisplayMeter(volumeLevel);
                 }
@@ -324,7 +338,7 @@ namespace AudioMeter.Actions
                     default:
                         meterBrush = DrawThreeColorGradient(width, height, lowColor, midColor, peakColor, backgroundColor);
                         break;
-                }             
+                }
 
                 // Background
                 var bgBrush = new SolidBrush(backgroundColor);
@@ -333,14 +347,34 @@ namespace AudioMeter.Actions
                 // Meter
                 graphics.FillRectangle(meterBrush, 0, startHeight, width, height);
 
-                if (settings.ShowLevelAsText)
+                if (isActionOnDial)
                 {
-                    await Connection.SetTitleAsync((string)level.ToString());
+                    img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+                    Dictionary<string, string> dkv = new Dictionary<string, string>();
+                    dkv["canvas"] = img.ToBase64(true);
+                    dkv["title"] = settings.AudioDevice;
+                    await Connection.SetFeedbackAsync(dkv);
+
+                }
+                else
+                {
+                    if (settings.ShowLevelAsText)
+                    {
+                        await Connection.SetTitleAsync((string)level.ToString());
+                    }
+                    await Connection.SetImageAsync(img);
                 }
 
-                await Connection.SetImageAsync(img);
                 graphics.Dispose();
             }
+        }
+
+        private async Task ClearDialImage()
+        {
+            Dictionary<string, string> dkv = new Dictionary<string, string>();
+            dkv["canvas"] = Tools.GenerateGenericKeyImage(out _).ToBase64(true);
+            dkv["title"] = settings.AudioDevice;
+            await Connection.SetFeedbackAsync(dkv);
         }
 
         private Color GetMeterColor(int level)
@@ -381,7 +415,6 @@ namespace AudioMeter.Actions
 
             return meterBrush;
         }
-
         #endregion
     }
 }
