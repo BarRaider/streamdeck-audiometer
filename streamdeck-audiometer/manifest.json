@@ -35,7 +35,10 @@
       ],
       "Controllers": [ "Keypad", "Encoder" ],
       "Encoder": {
-        "layout": "$A0"
+        "layout": "$A0",
+        "TriggerDescription": {
+          "Push": "Toggle mute"
+        }
       },
       "SupportedInMultiActions": false,
       "Tooltip": "Show levels based on Midi CC",

@@ -96,6 +96,7 @@ namespace AudioMeter.Actions
         private const string MID_COLOR_DEFAULT = "#FFFF00";
         private const string PEAK_COLOR_DEFAULT = "#FF0000";
         private const string BACKGROUND_COLOR_DEFAULT = "#000000";
+        private const string MUTE_ICON_PATH = @"images\muteIcon.png";
 
         private readonly PluginSettings settings;
         private readonly System.Timers.Timer tmrGetAudioLevel = new System.Timers.Timer();
@@ -174,7 +175,25 @@ namespace AudioMeter.Actions
 
         public override void DialRotate(DialRotatePayload payload) { }
 
-        public override void DialDown(DialPayload payload) { }
+        public override void DialDown(DialPayload payload) 
+        {
+            Logger.Instance.LogMessage(TracingLevel.INFO, "Key Pressed");
+
+            if (mmDevice == null)
+            {
+                SetMMDeviceFromDeviceName(settings.AudioDevice);
+            }
+
+            if (mmDevice == null)
+            {
+                Logger.Instance.LogMessage(TracingLevel.WARN, "Key Pressed but mmDevice is null");
+                return;
+            }
+
+            // Toggle mute
+            mmDevice.AudioEndpointVolume.Mute = !mmDevice.AudioEndpointVolume.Mute;
+            _ = ClearDialImage();
+        }
 
         public override void DialUp(DialPayload payload) { }
 
@@ -274,7 +293,7 @@ namespace AudioMeter.Actions
             {
                 if (mmDevice.AudioEndpointVolume.Mute)
                 {
-                    await Connection.SetTitleAsync("🔇");
+                    await DisplayMute();
                 }
                 else
                 {
@@ -299,6 +318,52 @@ namespace AudioMeter.Actions
             MMDeviceEnumerator enumerator = new MMDeviceEnumerator();
             mmDevice = enumerator.EnumerateAudioEndPoints(DataFlow.All, DeviceState.Active).ToList().Where(d => d.FriendlyName == deviceName).FirstOrDefault();
         }
+
+        private async Task DisplayMute()
+        {
+            using (Bitmap img = Tools.GenerateGenericKeyImage(out Graphics graphics))
+            {
+                int height = img.Height;
+                int width = img.Width;
+                var backgroundColor = ColorTranslator.FromHtml(settings.BackgroundColor);
+
+                // Background
+                var bgBrush = new SolidBrush(backgroundColor);
+                graphics.FillRectangle(bgBrush, 0, 0, width, height);
+
+                // Mute icon
+                Image icon = Image.FromFile(MUTE_ICON_PATH);
+                if (isActionOnDial)
+                {
+                    graphics.DrawImage(icon, (width - icon.Width) / 2, 0, icon.Width, icon.Height* 2);
+                }
+                else
+                {
+                    float iconWidth = (width - icon.Width) / 2;
+                    float iconHeight = (height - icon.Height) / 2;
+                    PointF iconStart = new PointF(iconWidth, iconHeight);
+                    graphics.DrawImage(icon, iconStart);
+                }
+                icon.Dispose();
+
+
+                if (isActionOnDial)
+                {
+                    Dictionary<string, string> dkv = new Dictionary<string, string>();
+                    dkv["canvas"] = img.ToBase64(true);
+                    dkv["title"] = settings.AudioDevice;
+                    await Connection.SetFeedbackAsync(dkv);
+
+                }
+                else
+                {
+                    await Connection.SetImageAsync(img);
+                }
+
+                graphics.Dispose();
+            }
+        }
+
 
         private async Task DisplayMeter(int level)
         {
