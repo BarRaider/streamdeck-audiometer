@@ -4,6 +4,9 @@ Shows the levels of your playback/recording devices on the Stream Deck
 
 **Author's website and contact information:** [https://barraider.com](https://barraider.com)
 
+## New in v1.3
+- 🆕  SD+ Dials support
+
 ## New in v1.1
 - Customizable "Max value" allows you to raise the bars based on what you want the peak to be.
 
